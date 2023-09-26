@@ -1,0 +1,47 @@
+def Position(word, Document):
+    Document = Document.split()
+    position = []
+    
+    for i in range(len(Document)):
+        if Document[i] == word:
+            position.append(i)
+            Document[i] = ""
+            
+    return position
+
+def PositionalIndex(word, Documents, DocNames):
+    PositionalIndex = {}
+    total_doc_count = 0
+    
+    for i in range(len(Documents)):
+        if word in Documents[i].split():
+            total_doc_count += 1
+            PositionalIndex[word] = total_doc_count
+
+            PositionalIndex[DocNames[i]] = Position(word, Documents[i])
+    
+    return PositionalIndex
+DocNames = ["Data", "Doc", "Information", "News"]
+Documents = []
+
+for i in DocNames:
+    try:
+        with open(f'{i}.txt') as file:
+            Documents += file.readlines()
+    except Exception as e:
+        print("There is a Problem", str(e))
+        
+words = []
+for i in Documents:
+    for j in i.lower().strip().split():
+        if j not in words:
+            words.append(j)
+words.sort()
+
+terms = {}
+
+for i in words:
+    terms[i] = PositionalIndex(i, Documents, DocNames)
+
+for i,j in terms.items():
+    print(i,j)
